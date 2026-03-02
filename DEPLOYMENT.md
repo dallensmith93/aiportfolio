@@ -6,7 +6,7 @@
 2. Configure exactly:
    - Base directory: `portfolio`
    - Build command: `npm run build`
-   - Publish directory: `portfolio/dist`
+   - Publish directory: `dist`
 3. Deploy.
 
 Netlify config source:
@@ -40,4 +40,4 @@ SPA rewrite is configured in `portfolio/vercel.json`.
 
 ## Build values
 - Build command: `npm run build`
-- Publish directory: `portfolio/dist`
+- Publish directory: `dist` (when base is `portfolio`)
