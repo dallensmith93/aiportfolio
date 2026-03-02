@@ -14,7 +14,7 @@ Premium product-style portfolio + engineering case-study hub for logic-heavy Rea
 - Dark mode toggle (persisted)
 - Sticky nav + command palette (`Ctrl+K`)
 - Ask My Projects panel (local ranking + citations, no API key required)
-- Interactive demos for rule engine, feature flags, spreadsheet logic
+- Interactive demos for rule engine, feature flags, spreadsheet logic, fraud scoring, and quant backtesting
 - Lazy-loaded routes and code splitting
 
 ## Commands (PowerShell)

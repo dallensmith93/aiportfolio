@@ -1,14 +1,39 @@
 import { useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import {
+  runBacktesterDemo,
+  runFraudScoringDemo,
   runFeatureFlagsDemo,
   runRuleEngineDemo,
   runSpreadsheetDemo
 } from "../../domain/playground";
 
-type DemoKey = "rule-engine-studio" | "feature-flags-control-plane" | "spreadsheet-lite-engine";
+type DemoKey =
+  | "rule-engine-studio"
+  | "feature-flags-control-plane"
+  | "spreadsheet-lite-engine"
+  | "fraud-scoring-api"
+  | "quant-backtester-lab";
+
+const defaultDemo: DemoKey = "rule-engine-studio";
+const validDemos = new Set<DemoKey>([
+  "rule-engine-studio",
+  "feature-flags-control-plane",
+  "spreadsheet-lite-engine",
+  "fraud-scoring-api",
+  "quant-backtester-lab"
+]);
+
+function parseDemoKey(value: string | null): DemoKey {
+  if (value && validDemos.has(value as DemoKey)) {
+    return value as DemoKey;
+  }
+  return defaultDemo;
+}
 
 export function PlaygroundPage() {
-  const [demo, setDemo] = useState<DemoKey>("rule-engine-studio");
+  const [searchParams] = useSearchParams();
+  const [demo, setDemo] = useState<DemoKey>(() => parseDemoKey(searchParams.get("demo")));
 
   const [age, setAge] = useState("24");
   const [country, setCountry] = useState("US");
@@ -17,6 +42,12 @@ export function PlaygroundPage() {
   const [targetCountry, setTargetCountry] = useState("US");
   const [cells, setCells] = useState("100,25,40");
   const [discount, setDiscount] = useState("12");
+  const [amount, setAmount] = useState("420");
+  const [txLastHour, setTxLastHour] = useState("4");
+  const [billingCountry, setBillingCountry] = useState("US");
+  const [shippingCountry, setShippingCountry] = useState("CA");
+  const [returns, setReturns] = useState("1.2,-0.8,0.4,2.1,-1.3");
+  const [startingCapital, setStartingCapital] = useState("10000");
 
   const result = useMemo(() => {
     if (demo === "rule-engine-studio") {
@@ -31,12 +62,42 @@ export function PlaygroundPage() {
     if (demo === "feature-flags-control-plane") {
       return runFeatureFlagsDemo(userId, Number(rollout), targetCountry, country);
     }
+    if (demo === "fraud-scoring-api") {
+      return runFraudScoringDemo(
+        Number(amount),
+        Number(txLastHour),
+        billingCountry,
+        shippingCountry
+      );
+    }
+    if (demo === "quant-backtester-lab") {
+      const parsedReturns = returns
+        .split(",")
+        .map((value) => Number(value.trim()))
+        .filter((value) => !Number.isNaN(value));
+      return runBacktesterDemo(parsedReturns, Number(startingCapital));
+    }
     const numbers = cells
       .split(",")
       .map((value) => Number(value.trim()))
       .filter((value) => !Number.isNaN(value));
     return runSpreadsheetDemo(numbers, Number(discount));
-  }, [demo, age, country, userId, rollout, targetCountry, cells, discount]);
+  }, [
+    demo,
+    age,
+    country,
+    userId,
+    rollout,
+    targetCountry,
+    cells,
+    discount,
+    amount,
+    txLastHour,
+    billingCountry,
+    shippingCountry,
+    returns,
+    startingCapital
+  ]);
 
   return (
     <section className="space-y-6">
@@ -47,11 +108,13 @@ export function PlaygroundPage() {
         </p>
       </header>
 
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-5">
         {[
           ["rule-engine-studio", "Rule Engine"],
           ["feature-flags-control-plane", "Feature Flags"],
-          ["spreadsheet-lite-engine", "Spreadsheet"]
+          ["spreadsheet-lite-engine", "Spreadsheet"],
+          ["fraud-scoring-api", "Fraud API"],
+          ["quant-backtester-lab", "Backtester"]
         ].map(([key, label]) => (
           <button
             key={key}
@@ -136,6 +199,64 @@ export function PlaygroundPage() {
                 className="mt-1 w-full rounded border border-slate-300 px-2 py-1 dark:border-slate-700 dark:bg-slate-950"
                 value={discount}
                 onChange={(event) => setDiscount(event.target.value)}
+              />
+            </label>
+          </div>
+        )}
+
+        {demo === "fraud-scoring-api" && (
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <label className="text-sm">
+              Amount
+              <input
+                className="mt-1 w-full rounded border border-slate-300 px-2 py-1 dark:border-slate-700 dark:bg-slate-950"
+                value={amount}
+                onChange={(event) => setAmount(event.target.value)}
+              />
+            </label>
+            <label className="text-sm">
+              Tx Last Hour
+              <input
+                className="mt-1 w-full rounded border border-slate-300 px-2 py-1 dark:border-slate-700 dark:bg-slate-950"
+                value={txLastHour}
+                onChange={(event) => setTxLastHour(event.target.value)}
+              />
+            </label>
+            <label className="text-sm">
+              Billing Country
+              <input
+                className="mt-1 w-full rounded border border-slate-300 px-2 py-1 dark:border-slate-700 dark:bg-slate-950"
+                value={billingCountry}
+                onChange={(event) => setBillingCountry(event.target.value)}
+              />
+            </label>
+            <label className="text-sm">
+              Shipping Country
+              <input
+                className="mt-1 w-full rounded border border-slate-300 px-2 py-1 dark:border-slate-700 dark:bg-slate-950"
+                value={shippingCountry}
+                onChange={(event) => setShippingCountry(event.target.value)}
+              />
+            </label>
+          </div>
+        )}
+
+        {demo === "quant-backtester-lab" && (
+          <div className="grid gap-3 sm:grid-cols-2">
+            <label className="text-sm">
+              Daily returns % (comma-separated)
+              <input
+                className="mt-1 w-full rounded border border-slate-300 px-2 py-1 dark:border-slate-700 dark:bg-slate-950"
+                value={returns}
+                onChange={(event) => setReturns(event.target.value)}
+              />
+            </label>
+            <label className="text-sm">
+              Starting Capital
+              <input
+                className="mt-1 w-full rounded border border-slate-300 px-2 py-1 dark:border-slate-700 dark:bg-slate-950"
+                value={startingCapital}
+                onChange={(event) => setStartingCapital(event.target.value)}
               />
             </label>
           </div>

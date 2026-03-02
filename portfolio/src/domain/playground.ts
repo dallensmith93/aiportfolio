@@ -84,3 +84,61 @@ export function runSpreadsheetDemo(
     trace
   };
 }
+
+export function runFraudScoringDemo(
+  amount: number,
+  txLastHour: number,
+  billingCountry: string,
+  shippingCountry: string
+): PlaygroundResult {
+  const trace: string[] = [];
+  let score = 0;
+
+  const amountRisk = Math.min(40, Math.max(0, Math.floor(amount / 50)));
+  score += amountRisk;
+  trace.push(`amount risk = min(40, floor(${amount} / 50)) = ${amountRisk}`);
+
+  const velocityRisk = Math.min(35, txLastHour * 5);
+  score += velocityRisk;
+  trace.push(`velocity risk = min(35, ${txLastHour} * 5) = ${velocityRisk}`);
+
+  const crossBorder = billingCountry.trim().toUpperCase() !== shippingCountry.trim().toUpperCase();
+  if (crossBorder) {
+    score += 25;
+  }
+  trace.push(`cross-border risk (${billingCountry} != ${shippingCountry}) = ${crossBorder ? 25 : 0}`);
+
+  const capped = Math.min(100, score);
+  const decision = capped >= 70 ? "REVIEW" : "APPROVE";
+  trace.push(`final score = min(100, ${score}) = ${capped}`);
+
+  return {
+    output: `${decision} (${capped}/100)`,
+    trace
+  };
+}
+
+export function runBacktesterDemo(returns: number[], startingCapital: number): PlaygroundResult {
+  const trace: string[] = [];
+  let equity = startingCapital;
+  let peak = startingCapital;
+  let maxDrawdown = 0;
+
+  returns.forEach((dailyReturn) => {
+    equity = equity * (1 + dailyReturn / 100);
+    peak = Math.max(peak, equity);
+    const drawdown = ((peak - equity) / peak) * 100;
+    maxDrawdown = Math.max(maxDrawdown, drawdown);
+  });
+
+  const cumulative = ((equity - startingCapital) / startingCapital) * 100;
+  trace.push(`start capital = ${startingCapital.toFixed(2)}`);
+  trace.push(`end equity = ${equity.toFixed(2)}`);
+  trace.push(`cumulative return = ${cumulative.toFixed(2)}%`);
+  trace.push(`max drawdown = ${maxDrawdown.toFixed(2)}%`);
+
+  return {
+    output: `PnL ${cumulative.toFixed(2)}% | Max DD ${maxDrawdown.toFixed(2)}%`,
+    trace
+  };
+}

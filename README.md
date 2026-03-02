@@ -9,7 +9,7 @@ Highlights:
 - Product-style UI with responsive layout and dark mode
 - Case-study project details (Problem, Approach, Domain Model, Algorithms, Edge Cases, Tests, Next steps)
 - Command palette (`Ctrl+K`) and local "Ask My Projects" assistant with citations
-- Interactive playground demos for rule engine, feature flags, spreadsheet logic
+- Interactive playground demos for rule engine, feature flags, spreadsheet logic, fraud scoring, and quant backtesting
 
 Run locally (PowerShell):
 ```powershell

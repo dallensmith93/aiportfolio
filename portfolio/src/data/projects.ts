@@ -191,5 +191,132 @@ export const projects: PortfolioProject[] = [
       "Add range functions",
       "Persist workbook snapshots"
     ]
+  },
+  {
+    "title": "Fraud Scoring API",
+    "slug": "fraud-scoring-api",
+    "category": "Risk Intelligence",
+    "tags": [
+      "Python",
+      "FastAPI",
+      "Fraud Detection",
+      "Scoring"
+    ],
+    "shortDescription": "Real-time fraud scoring API with explainable risk factors and review thresholds.",
+    "longDescription": "A Python-first fraud scoring service designed for checkout risk decisions under tight latency budgets. It combines deterministic score components, transparent traces, and configurable approval/review thresholds.",
+    "highlights": [
+      "FastAPI endpoint with typed request/response contracts.",
+      "Composable score factors for amount, velocity, and geo mismatch.",
+      "Explainability trace suitable for analyst and support workflows."
+    ],
+    "architecture": [
+      "src/domain: scoring policy, thresholds, explanation trace",
+      "src/features: scenario runner, risk factor controls",
+      "src/test: policy validation and API contract checks"
+    ],
+    "tech": [
+      "Python",
+      "FastAPI",
+      "Pydantic",
+      "Pytest"
+    ],
+    "repoPath": "apps/fraud-scoring-api",
+    "runCommands": [
+      "python -m uvicorn src.app.main:app --reload"
+    ],
+    "demoPaths": [
+      "/playground?demo=fraud-scoring-api"
+    ],
+    "hasUnitTests": true,
+    "hasE2E": true,
+    "problem": "Fraud teams needed consistent decisions with clear reasons instead of ad-hoc manual reviews.",
+    "approach": "Implemented deterministic score factors with transparent traces and strict threshold routing.",
+    "domainModel": [
+      "FraudSignal { key, value, weight }",
+      "RiskScore { total, factors, decision }",
+      "DecisionPolicy { approveBelow, reviewBelow }"
+    ],
+    "algorithms": [
+      "Weighted score aggregation with bounded factors",
+      "Threshold-based decision routing"
+    ],
+    "edgeCases": [
+      "Missing optional customer fields",
+      "Negative or malformed transaction amounts",
+      "High-velocity bursts during flash sales"
+    ],
+    "tests": [
+      "Unit tests for each risk factor",
+      "Integration tests for decision thresholds",
+      "API contract tests for invalid payload handling"
+    ],
+    "nextSteps": [
+      "Add device fingerprint anomaly signal",
+      "Introduce model shadow mode for candidate policies"
+    ]
+  },
+  {
+    "title": "Quant Backtester Lab",
+    "slug": "quant-backtester-lab",
+    "category": "Quant Analytics",
+    "tags": [
+      "Python",
+      "Pandas",
+      "Backtesting",
+      "Finance"
+    ],
+    "shortDescription": "Strategy backtesting toolkit with PnL curves, drawdown tracking, and parameter sweeps.",
+    "longDescription": "A Python backtesting workspace focused on repeatable strategy evaluation. Core domain logic computes position-level performance, cumulative return, and risk metrics while lightweight UI tools expose what changed between runs.",
+    "highlights": [
+      "Deterministic backtest pipeline from signals to filled positions.",
+      "Performance outputs including cumulative return and max drawdown.",
+      "Parameter sweep support for controlled strategy tuning."
+    ],
+    "architecture": [
+      "src/domain: signal engine, fills, risk metrics",
+      "src/features: run controls, equity chart, summary cards",
+      "src/test: metric correctness and scenario-based regression tests"
+    ],
+    "tech": [
+      "Python",
+      "Pandas",
+      "NumPy",
+      "Pytest"
+    ],
+    "repoPath": "apps/quant-backtester-lab",
+    "runCommands": [
+      "python -m src.app.cli run-backtest"
+    ],
+    "demoPaths": [
+      "/playground?demo=quant-backtester-lab"
+    ],
+    "hasUnitTests": true,
+    "hasE2E": true,
+    "problem": "Trading ideas were hard to compare because each analysis notebook used slightly different assumptions.",
+    "approach": "Standardized backtest calculations in domain modules and surfaced risk metrics with reproducible configs.",
+    "domainModel": [
+      "Signal { timestamp, side, confidence }",
+      "Position { entry, exit, size, fees }",
+      "BacktestSummary { pnlPct, maxDrawdownPct, winRate }"
+    ],
+    "algorithms": [
+      "Rolling equity curve updates from daily returns",
+      "Max drawdown tracking from running peak",
+      "Grid search over parameter combinations"
+    ],
+    "edgeCases": [
+      "Sparse trading days",
+      "Large overnight gaps",
+      "Negative equity prevention for extreme leverage"
+    ],
+    "tests": [
+      "Unit tests for drawdown and return math",
+      "Integration tests for signal-to-position flow",
+      "Golden dataset regression tests for strategy configs"
+    ],
+    "nextSteps": [
+      "Add walk-forward validation workflow",
+      "Export tear sheets for research review"
+    ]
   }
 ];
