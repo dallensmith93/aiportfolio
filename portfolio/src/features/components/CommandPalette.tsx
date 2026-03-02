@@ -91,14 +91,14 @@ export function CommandPalette({ projects }: CommandPaletteProps) {
       aria-modal="true"
       aria-label="Command palette"
     >
-      <div className="mx-auto mt-14 w-full max-w-2xl rounded-xl border border-slate-200 bg-white shadow-2xl dark:border-slate-700 dark:bg-slate-900">
+      <div className="mx-auto mt-14 w-full max-w-2xl rounded-xl border border-slate-300 bg-white shadow-2xl dark:border-slate-700 dark:bg-slate-900">
         <input
           autoFocus
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           onKeyDown={onListKeyDown}
           placeholder="Search projects or routes..."
-          className="w-full rounded-t-xl border-0 border-b border-slate-200 bg-transparent px-4 py-3 text-sm text-slate-800 outline-none dark:border-slate-700 dark:text-slate-100"
+          className="w-full rounded-t-xl border-0 border-b border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
         />
         <ul className="max-h-72 overflow-y-auto p-2">
           {items.map((item, index) => (
@@ -109,7 +109,7 @@ export function CommandPalette({ projects }: CommandPaletteProps) {
                   "flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm",
                   index === activeIndex
                     ? "bg-sky-600 text-white"
-                    : "text-slate-700 hover:bg-slate-100 dark:text-slate-100 dark:hover:bg-slate-800"
+                    : "text-slate-900 hover:bg-slate-200 dark:text-slate-100 dark:hover:bg-slate-800"
                 ].join(" ")}
                 onMouseEnter={() => setActiveIndex(index)}
                 onClick={() => selectItem(item)}
