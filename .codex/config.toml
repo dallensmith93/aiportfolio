@@ -1,0 +1,27 @@
+﻿[agents]
+max_threads = 6
+max_depth = 1
+
+[agents.coder1]
+description = "Core domain logic / engines (pure TS)"
+config_file = "agents/coder1.toml"
+
+[agents.coder2]
+description = "UI / routes / components (React)"
+config_file = "agents/coder2.toml"
+
+[agents.coder3]
+description = "Persistence / integration / mocks"
+config_file = "agents/coder3.toml"
+
+[agents.tester]
+description = "Vitest + RTL + Playwright + MSW"
+config_file = "agents/tester.toml"
+
+[agents.docs]
+description = "READMEs + run instructions"
+config_file = "agents/docs.toml"
+
+[agents.reviewer]
+description = "Final pass + fix gaps"
+config_file = "agents/reviewer.toml"

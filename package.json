@@ -1,0 +1,10 @@
+{
+  "name": "aiportfolio-root",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev:app": "node -e \"const {spawnSync}=require('node:child_process'); const app=process.env.APP; if(!app){console.error('APP is required. Example: $env:APP=\\\"rule-form-builder\\\"; pnpm run dev:app'); process.exit(1);} const r=spawnSync('pnpm',['-C',`apps/${app}`,'dev'],{stdio:'inherit',shell:true}); process.exit(r.status ?? 1);\"",
+    "test:app": "node -e \"const {spawnSync}=require('node:child_process'); const app=process.env.APP; if(!app){console.error('APP is required. Example: $env:APP=\\\"rule-form-builder\\\"; pnpm run test:app'); process.exit(1);} const r=spawnSync('pnpm',['-C',`apps/${app}`,'test'],{stdio:'inherit',shell:true}); process.exit(r.status ?? 1);\"",
+    "e2e:app": "node -e \"const {spawnSync}=require('node:child_process'); const app=process.env.APP; if(!app){console.error('APP is required. Example: $env:APP=\\\"rule-form-builder\\\"; pnpm run e2e:app'); process.exit(1);} const r=spawnSync('pnpm',['-C',`apps/${app}`,'e2e'],{stdio:'inherit',shell:true}); process.exit(r.status ?? 1);\""
+  }
+}
