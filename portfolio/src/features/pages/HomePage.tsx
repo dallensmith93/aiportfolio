@@ -10,14 +10,15 @@ export function HomePage() {
     <div className="space-y-10">
       <section className="overflow-hidden rounded-3xl border border-slate-200 bg-white p-8 shadow-panel transition dark:border-slate-800 dark:bg-slate-900 sm:p-10">
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-600">
-          Product Engineering + Domain Logic
+          React + TypeScript + Python Development
         </p>
         <h1 className="mt-3 max-w-3xl text-4xl font-bold tracking-tight sm:text-5xl">
-          AI Apps Portfolio
+          React + TypeScript + Python Portfolio
         </h1>
         <p className="mt-4 max-w-3xl text-base text-slate-600 dark:text-slate-300">
-          A case-study hub for logic-heavy React + TypeScript apps where domain
-          rules, tests, and documentation are treated as product features.
+          A case-study hub for React + TypeScript and Python development where
+          domain rules, tests, and documentation are treated as product
+          features.
         </p>
         <div className="mt-6 flex flex-wrap gap-3">
           <Link

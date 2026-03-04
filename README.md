@@ -1,6 +1,6 @@
 # aiportfolio
 
-Monorepo root for app projects and a premium portfolio site.
+Monorepo root for app projects and a portfolio focused on React + TypeScript and Python development.
 
 ## Portfolio
 Path: `portfolio/`

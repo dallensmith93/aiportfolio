@@ -21,7 +21,7 @@ export function SiteLayout() {
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
           <div className="flex items-center gap-3">
             <Link to="/" className="text-lg font-bold tracking-tight">
-              AI Apps Portfolio
+              React + TypeScript + Python Portfolio
             </Link>
             <kbd className="hidden rounded border border-slate-300 bg-slate-100 px-2 py-1 text-xs text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 sm:inline">
               Ctrl+K

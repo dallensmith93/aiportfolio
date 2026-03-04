@@ -1,6 +1,6 @@
 # Portfolio
 
-Premium product-style portfolio + engineering case-study hub for logic-heavy React + TypeScript apps.
+Premium product-style portfolio and case-study hub for React + TypeScript and Python development.
 
 ## Routes
 - `/` Home
