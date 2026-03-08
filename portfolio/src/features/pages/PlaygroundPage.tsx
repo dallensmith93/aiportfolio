@@ -278,16 +278,11 @@ export function PlaygroundPage() {
         {demo === "rockwell-agency-site" && (
           <div className="space-y-3">
             <p className="text-sm text-slate-700 dark:text-slate-300">
-              This playground entry launches your local Rockwell Agency WordPress site.
+              Rockwell Agency Site is now featured directly in your portfolio projects.
             </p>
-            <a
-              href="http://rockwell-agency-site.local"
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex rounded-lg bg-sky-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-sky-500"
-            >
-              Open Rockwell Site
-            </a>
+            <p className="text-sm text-slate-700 dark:text-slate-300">
+              Use the Projects page to view the full Rockwell project entry and details without leaving the portfolio app.
+            </p>
           </div>
         )}
 

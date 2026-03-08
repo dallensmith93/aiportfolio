@@ -351,7 +351,6 @@ export const projects: PortfolioProject[] = [
       "Start the local WordPress site in Local"
     ],
     "demoPaths": [
-      "http://rockwell-agency-site.local",
       "/playground?demo=rockwell-agency-site"
     ],
     "hasUnitTests": false,
