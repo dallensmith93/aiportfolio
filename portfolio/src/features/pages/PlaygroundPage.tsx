@@ -13,7 +13,8 @@ type DemoKey =
   | "feature-flags-control-plane"
   | "spreadsheet-lite-engine"
   | "fraud-scoring-api"
-  | "quant-backtester-lab";
+  | "quant-backtester-lab"
+  | "rockwell-agency-site";
 
 const defaultDemo: DemoKey = "rule-engine-studio";
 const validDemos = new Set<DemoKey>([
@@ -21,7 +22,8 @@ const validDemos = new Set<DemoKey>([
   "feature-flags-control-plane",
   "spreadsheet-lite-engine",
   "fraud-scoring-api",
-  "quant-backtester-lab"
+  "quant-backtester-lab",
+  "rockwell-agency-site"
 ]);
 
 function parseDemoKey(value: string | null): DemoKey {
@@ -77,6 +79,16 @@ export function PlaygroundPage() {
         .filter((value) => !Number.isNaN(value));
       return runBacktesterDemo(parsedReturns, Number(startingCapital));
     }
+    if (demo === "rockwell-agency-site") {
+      return {
+        output: "Rockwell site showcase ready",
+        trace: [
+          "Custom WordPress contractor theme",
+          "Conversion sections: hero, services, testimonials, FAQ, contact",
+          "Use the launch button below to open the local site"
+        ]
+      };
+    }
     const numbers = cells
       .split(",")
       .map((value) => Number(value.trim()))
@@ -108,13 +120,14 @@ export function PlaygroundPage() {
         </p>
       </header>
 
-      <div className="grid gap-4 md:grid-cols-5">
+      <div className="grid gap-4 md:grid-cols-6">
         {[
           ["rule-engine-studio", "Rule Engine"],
           ["feature-flags-control-plane", "Feature Flags"],
           ["spreadsheet-lite-engine", "Spreadsheet"],
           ["fraud-scoring-api", "Fraud API"],
-          ["quant-backtester-lab", "Backtester"]
+          ["quant-backtester-lab", "Backtester"],
+          ["rockwell-agency-site", "Rockwell Site"]
         ].map(([key, label]) => (
           <button
             key={key}
@@ -259,6 +272,22 @@ export function PlaygroundPage() {
                 onChange={(event) => setStartingCapital(event.target.value)}
               />
             </label>
+          </div>
+        )}
+
+        {demo === "rockwell-agency-site" && (
+          <div className="space-y-3">
+            <p className="text-sm text-slate-700 dark:text-slate-300">
+              This playground entry launches your local Rockwell Agency WordPress site.
+            </p>
+            <a
+              href="http://rockwell-agency-site.local"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex rounded-lg bg-sky-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-sky-500"
+            >
+              Open Rockwell Site
+            </a>
           </div>
         )}
 
