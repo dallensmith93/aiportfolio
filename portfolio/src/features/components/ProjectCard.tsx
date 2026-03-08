@@ -6,6 +6,8 @@ type ProjectCardProps = {
 };
 
 export function ProjectCard({ project }: ProjectCardProps) {
+  const primaryDemoPath = project.demoPaths?.[0];
+
   return (
     <article className="rounded-2xl border border-slate-300 bg-white p-5 shadow-panel transition hover:-translate-y-0.5 hover:shadow-xl dark:border-slate-800 dark:bg-slate-900">
       <div className="mb-3 flex flex-wrap gap-2">
@@ -29,12 +31,24 @@ export function ProjectCard({ project }: ProjectCardProps) {
         <code className="rounded border border-slate-300 bg-slate-100 px-2 py-1 text-xs text-slate-800 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200">
           {project.repoPath}
         </code>
-        <Link
-          to={`/projects/${project.slug}`}
-          className="rounded-lg bg-sky-600 px-3 py-2 text-sm font-medium text-white transition hover:bg-sky-500"
-        >
-          View details
-        </Link>
+        <div className="flex items-center gap-2">
+          {primaryDemoPath && (
+            <a
+              href={primaryDemoPath}
+              target={primaryDemoPath.startsWith("http") ? "_blank" : undefined}
+              rel={primaryDemoPath.startsWith("http") ? "noreferrer" : undefined}
+              className="rounded-lg border border-sky-600 px-3 py-2 text-sm font-medium text-sky-700 transition hover:bg-sky-50 dark:text-sky-300 dark:hover:bg-slate-800"
+            >
+              Open demo
+            </a>
+          )}
+          <Link
+            to={`/projects/${project.slug}`}
+            className="rounded-lg bg-sky-600 px-3 py-2 text-sm font-medium text-white transition hover:bg-sky-500"
+          >
+            View details
+          </Link>
+        </div>
       </div>
     </article>
   );

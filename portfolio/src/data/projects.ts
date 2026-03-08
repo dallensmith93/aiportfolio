@@ -318,5 +318,65 @@ export const projects: PortfolioProject[] = [
       "Add walk-forward validation workflow",
       "Export tear sheets for research review"
     ]
+  },
+  {
+    "title": "Rockwell Agency Site",
+    "slug": "rockwell-agency-site",
+    "category": "Web Design",
+    "tags": [
+      "WordPress",
+      "Contractor",
+      "Marketing Site"
+    ],
+    "shortDescription": "Conversion-focused contractor website built for Rockwell Agency.",
+    "longDescription": "A full contractor marketing website built in WordPress with a fast mobile layout, service highlights, trust sections, and lead-capture flow. Added to this portfolio as a showcase project with direct demo access.",
+    "highlights": [
+      "Mobile-first hero with clear call-first CTA hierarchy.",
+      "Dedicated services, testimonials, service area, and FAQ sections.",
+      "Lead capture form flow designed for estimate requests."
+    ],
+    "architecture": [
+      "WordPress custom theme with reusable template parts",
+      "Theme assets in main.css + main.js",
+      "Section-based homepage optimized for service-business conversions"
+    ],
+    "tech": [
+      "WordPress",
+      "PHP",
+      "JavaScript",
+      "CSS"
+    ],
+    "repoPath": "Rockwell-Agency-Site",
+    "runCommands": [
+      "Start the local WordPress site in Local"
+    ],
+    "demoPaths": [
+      "http://rockwell-agency-site.local"
+    ],
+    "hasUnitTests": false,
+    "hasE2E": false,
+    "problem": "Needed a client-facing contractor website that showcases services and converts visitors into phone calls and estimate submissions.",
+    "approach": "Built a custom WordPress theme with focused conversion sections and straightforward navigation that prioritizes contact actions.",
+    "domainModel": [
+      "Hero + trust indicators",
+      "Services + testimonials + FAQ",
+      "Lead form + CTA blocks"
+    ],
+    "algorithms": [
+      "N/A - content-driven marketing site"
+    ],
+    "edgeCases": [
+      "Mobile navigation behavior across breakpoints",
+      "Contact form handling for unauthenticated users",
+      "Fallback navigation when menus are not configured"
+    ],
+    "tests": [
+      "Manual responsive QA across desktop/mobile",
+      "Manual form submission flow validation"
+    ],
+    "nextSteps": [
+      "Add final client branding assets and copy",
+      "Connect form handler to production email destination"
+    ]
   }
 ];

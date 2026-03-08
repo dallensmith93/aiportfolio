@@ -73,6 +73,21 @@ export function ProjectDetailPage() {
             </code>
           ))}
         </div>
+        {project.demoPaths && project.demoPaths.length > 0 && (
+          <div className="mt-4 flex flex-wrap gap-2">
+            {project.demoPaths.map((path) => (
+              <a
+                key={path}
+                href={path}
+                target={path.startsWith("http") ? "_blank" : undefined}
+                rel={path.startsWith("http") ? "noreferrer" : undefined}
+                className="rounded-lg border border-sky-500 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-sky-700 transition hover:bg-sky-50 dark:text-sky-300 dark:hover:bg-slate-800"
+              >
+                Open demo
+              </a>
+            ))}
+          </div>
+        )}
       </header>
 
       <section className="grid gap-4 md:grid-cols-2">
