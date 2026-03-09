@@ -2,8 +2,11 @@ import { useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import {
   runBacktesterDemo,
+  runCompanyCredibilityDemo,
   runFraudScoringDemo,
   runFeatureFlagsDemo,
+  runJobLegitimacyDemo,
+  runRecruiterCheckDemo,
   runRuleEngineDemo,
   runSpreadsheetDemo
 } from "../../domain/playground";
@@ -14,7 +17,10 @@ type DemoKey =
   | "spreadsheet-lite-engine"
   | "fraud-scoring-api"
   | "quant-backtester-lab"
-  | "rockwell-agency-site";
+  | "rockwell-agency-site"
+  | "job-legitimacy-checker"
+  | "recruiter-message-check"
+  | "company-credibility-check";
 
 const defaultDemo: DemoKey = "rule-engine-studio";
 const validDemos = new Set<DemoKey>([
@@ -23,7 +29,10 @@ const validDemos = new Set<DemoKey>([
   "spreadsheet-lite-engine",
   "fraud-scoring-api",
   "quant-backtester-lab",
-  "rockwell-agency-site"
+  "rockwell-agency-site",
+  "job-legitimacy-checker",
+  "recruiter-message-check",
+  "company-credibility-check"
 ]);
 
 function parseDemoKey(value: string | null): DemoKey {
@@ -31,6 +40,28 @@ function parseDemoKey(value: string | null): DemoKey {
     return value as DemoKey;
   }
   return defaultDemo;
+}
+
+function inferRiskLevel(output: string): "low" | "moderate" | "elevated" | "high" | null {
+  const text = output.toLowerCase();
+  if (text.includes("high risk")) return "high";
+  if (text.includes("elevated risk")) return "elevated";
+  if (text.includes("moderate risk")) return "moderate";
+  if (text.includes("low risk")) return "low";
+  return null;
+}
+
+function riskBadgeClass(level: "low" | "moderate" | "elevated" | "high"): string {
+  if (level === "low") {
+    return "border-emerald-500/40 bg-emerald-500/15 text-emerald-600 dark:text-emerald-300";
+  }
+  if (level === "moderate") {
+    return "border-amber-500/40 bg-amber-500/15 text-amber-700 dark:text-amber-300";
+  }
+  if (level === "elevated") {
+    return "border-orange-500/40 bg-orange-500/15 text-orange-700 dark:text-orange-300";
+  }
+  return "border-rose-500/40 bg-rose-500/15 text-rose-700 dark:text-rose-300";
 }
 
 export function PlaygroundPage() {
@@ -50,6 +81,19 @@ export function PlaygroundPage() {
   const [shippingCountry, setShippingCountry] = useState("CA");
   const [returns, setReturns] = useState("1.2,-0.8,0.4,2.1,-1.3");
   const [startingCapital, setStartingCapital] = useState("10000");
+  const [jobTitle, setJobTitle] = useState("Founding AI Engineer");
+  const [companyName, setCompanyName] = useState("NovaRelay");
+  const [jobDescription, setJobDescription] = useState(
+    "Responsibilities, interview process, and salary transparency included."
+  );
+  const [salaryRange, setSalaryRange] = useState("$140k-$175k");
+  const [recruiterMessage, setRecruiterMessage] = useState(
+    "We can schedule a technical interview and share official role details."
+  );
+  const [postingUrl, setPostingUrl] = useState("https://novarelay.ai/careers/founding-ai-engineer");
+  const [companyWebsite, setCompanyWebsite] = useState("https://novarelay.ai");
+  const [companyDomain, setCompanyDomain] = useState("novarelay.ai");
+  const [recruiterEmail, setRecruiterEmail] = useState("talent@novarelay.ai");
 
   const result = useMemo(() => {
     if (demo === "rule-engine-studio") {
@@ -89,6 +133,29 @@ export function PlaygroundPage() {
         ]
       };
     }
+    if (demo === "job-legitimacy-checker") {
+      return runJobLegitimacyDemo({
+        jobTitle,
+        companyName,
+        jobDescription,
+        salaryRange,
+        recruiterMessage,
+        recruiterEmail,
+        postingUrl,
+        companyWebsite
+      });
+    }
+    if (demo === "recruiter-message-check") {
+      return runRecruiterCheckDemo({ message: recruiterMessage, recruiterEmail });
+    }
+    if (demo === "company-credibility-check") {
+      return runCompanyCredibilityDemo({
+        companyName,
+        domain: companyDomain,
+        website: companyWebsite,
+        postingUrl
+      });
+    }
     const numbers = cells
       .split(",")
       .map((value) => Number(value.trim()))
@@ -108,8 +175,19 @@ export function PlaygroundPage() {
     billingCountry,
     shippingCountry,
     returns,
-    startingCapital
+    startingCapital,
+    jobTitle,
+    companyName,
+    jobDescription,
+    salaryRange,
+    recruiterMessage,
+    postingUrl,
+    companyWebsite,
+    companyDomain,
+    recruiterEmail
   ]);
+
+  const inferredRisk = inferRiskLevel(result.output);
 
   return (
     <section className="space-y-6">
@@ -120,14 +198,17 @@ export function PlaygroundPage() {
         </p>
       </header>
 
-      <div className="grid gap-4 md:grid-cols-6">
+      <div className="grid gap-4 md:grid-cols-9">
         {[
           ["rule-engine-studio", "Rule Engine"],
           ["feature-flags-control-plane", "Feature Flags"],
           ["spreadsheet-lite-engine", "Spreadsheet"],
           ["fraud-scoring-api", "Fraud API"],
           ["quant-backtester-lab", "Backtester"],
-          ["rockwell-agency-site", "Rockwell Site"]
+          ["rockwell-agency-site", "Rockwell Site"],
+          ["job-legitimacy-checker", "Job Legitimacy"],
+          ["recruiter-message-check", "Recruiter Check"],
+          ["company-credibility-check", "Company Check"]
         ].map(([key, label]) => (
           <button
             key={key}
@@ -286,9 +367,140 @@ export function PlaygroundPage() {
           </div>
         )}
 
+        {demo === "job-legitimacy-checker" && (
+          <div className="grid gap-3 sm:grid-cols-2">
+            <label className="text-sm">
+              Job Title
+              <input
+                className="mt-1 w-full rounded border border-slate-300 px-2 py-1 dark:border-slate-700 dark:bg-slate-950"
+                value={jobTitle}
+                onChange={(event) => setJobTitle(event.target.value)}
+              />
+            </label>
+            <label className="text-sm">
+              Company
+              <input
+                className="mt-1 w-full rounded border border-slate-300 px-2 py-1 dark:border-slate-700 dark:bg-slate-950"
+                value={companyName}
+                onChange={(event) => setCompanyName(event.target.value)}
+              />
+            </label>
+            <label className="text-sm sm:col-span-2">
+              Job Description
+              <input
+                className="mt-1 w-full rounded border border-slate-300 px-2 py-1 dark:border-slate-700 dark:bg-slate-950"
+                value={jobDescription}
+                onChange={(event) => setJobDescription(event.target.value)}
+              />
+            </label>
+            <label className="text-sm">
+              Salary Range
+              <input
+                className="mt-1 w-full rounded border border-slate-300 px-2 py-1 dark:border-slate-700 dark:bg-slate-950"
+                value={salaryRange}
+                onChange={(event) => setSalaryRange(event.target.value)}
+              />
+            </label>
+            <label className="text-sm">
+              Company Website
+              <input
+                className="mt-1 w-full rounded border border-slate-300 px-2 py-1 dark:border-slate-700 dark:bg-slate-950"
+                value={companyWebsite}
+                onChange={(event) => setCompanyWebsite(event.target.value)}
+              />
+            </label>
+            <label className="text-sm sm:col-span-2">
+              Posting URL
+              <input
+                className="mt-1 w-full rounded border border-slate-300 px-2 py-1 dark:border-slate-700 dark:bg-slate-950"
+                value={postingUrl}
+                onChange={(event) => setPostingUrl(event.target.value)}
+              />
+            </label>
+            <label className="text-sm sm:col-span-2">
+              Recruiter Email
+              <input
+                className="mt-1 w-full rounded border border-slate-300 px-2 py-1 dark:border-slate-700 dark:bg-slate-950"
+                value={recruiterEmail}
+                onChange={(event) => setRecruiterEmail(event.target.value)}
+              />
+            </label>
+          </div>
+        )}
+
+        {demo === "recruiter-message-check" && (
+          <div className="grid gap-3">
+            <label className="text-sm">
+              Recruiter Message
+              <input
+                className="mt-1 w-full rounded border border-slate-300 px-2 py-1 dark:border-slate-700 dark:bg-slate-950"
+                value={recruiterMessage}
+                onChange={(event) => setRecruiterMessage(event.target.value)}
+              />
+            </label>
+            <label className="text-sm">
+              Recruiter Email
+              <input
+                className="mt-1 w-full rounded border border-slate-300 px-2 py-1 dark:border-slate-700 dark:bg-slate-950"
+                value={recruiterEmail}
+                onChange={(event) => setRecruiterEmail(event.target.value)}
+              />
+            </label>
+          </div>
+        )}
+
+        {demo === "company-credibility-check" && (
+          <div className="grid gap-3 sm:grid-cols-2">
+            <label className="text-sm">
+              Company
+              <input
+                className="mt-1 w-full rounded border border-slate-300 px-2 py-1 dark:border-slate-700 dark:bg-slate-950"
+                value={companyName}
+                onChange={(event) => setCompanyName(event.target.value)}
+              />
+            </label>
+            <label className="text-sm">
+              Domain
+              <input
+                className="mt-1 w-full rounded border border-slate-300 px-2 py-1 dark:border-slate-700 dark:bg-slate-950"
+                value={companyDomain}
+                onChange={(event) => setCompanyDomain(event.target.value)}
+              />
+            </label>
+            <label className="text-sm">
+              Website
+              <input
+                className="mt-1 w-full rounded border border-slate-300 px-2 py-1 dark:border-slate-700 dark:bg-slate-950"
+                value={companyWebsite}
+                onChange={(event) => setCompanyWebsite(event.target.value)}
+              />
+            </label>
+            <label className="text-sm">
+              Posting URL
+              <input
+                className="mt-1 w-full rounded border border-slate-300 px-2 py-1 dark:border-slate-700 dark:bg-slate-950"
+                value={postingUrl}
+                onChange={(event) => setPostingUrl(event.target.value)}
+              />
+            </label>
+          </div>
+        )}
+
         <div className="mt-5 rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-950">
           <p className="text-sm font-semibold">Output</p>
-          <p className="mt-1 text-lg font-bold text-sky-600">{result.output}</p>
+          <div className="mt-1 flex flex-wrap items-center gap-2">
+            <p className="text-lg font-bold text-sky-600">{result.output}</p>
+            {inferredRisk && (
+              <span
+                className={[
+                  "rounded-full border px-2 py-0.5 text-xs font-semibold uppercase tracking-wide",
+                  riskBadgeClass(inferredRisk)
+                ].join(" ")}
+              >
+                {inferredRisk} risk
+              </span>
+            )}
+          </div>
           <p className="mt-3 text-sm font-semibold">Trace</p>
           <ul className="mt-1 list-disc space-y-1 pl-5 text-sm text-slate-600 dark:text-slate-300">
             {result.trace.map((line) => (

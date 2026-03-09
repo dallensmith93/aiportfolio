@@ -378,5 +378,186 @@ export const projects: PortfolioProject[] = [
       "Add final client branding assets and copy",
       "Connect form handler to production email destination"
     ]
+  },
+  {
+    "title": "Job Legitimacy Checker",
+    "slug": "job-legitimacy-checker",
+    "category": "Career Intelligence",
+    "tags": [
+      "Risk Analysis",
+      "Job Search",
+      "Trust Signals",
+      "FastAPI"
+    ],
+    "shortDescription": "Analyzes job postings and returns explainable legitimacy, confidence, and risk output.",
+    "longDescription": "A deterministic risk-analysis tool that evaluates job postings for trust signals, suspicious language, and compensation clarity. Produces balanced risk labels, explainable evidence, and actionable follow-up guidance.",
+    "highlights": [
+      "Legitimacy score + scam risk score with transparent breakdown.",
+      "Balanced risk labels: low, moderate, elevated, high.",
+      "Evidence-first output: trust signals, red flags, and recommended action."
+    ],
+    "architecture": [
+      "apps/api: FastAPI routers and legitimacy services",
+      "apps/web: report UI, score cards, confidence meter",
+      "data-driven suspicious/trusted pattern JSON inputs"
+    ],
+    "tech": [
+      "Next.js",
+      "TypeScript",
+      "FastAPI",
+      "Pytest"
+    ],
+    "repoPath": "apps/startup-scout",
+    "runCommands": [
+      "pnpm dev:web",
+      "pnpm dev:api"
+    ],
+    "demoPaths": [
+      "/playground?demo=job-legitimacy-checker"
+    ],
+    "hasUnitTests": true,
+    "hasE2E": false,
+    "problem": "Candidates needed a clear way to evaluate suspicious job opportunities without panic-driven decision making.",
+    "approach": "Built deterministic heuristics with transparent scoring and explanation fields so users can inspect why a risk label was produced.",
+    "domainModel": [
+      "LegitimacyInput { title, company, description, salary, recruiter message }",
+      "LegitimacyResult { legitimacyScore, scamRiskScore, confidence, riskLevel }",
+      "Evidence { positiveEvidence, riskEvidence, scoreBreakdown }"
+    ],
+    "algorithms": [
+      "Pattern-matching for suspicious language",
+      "Weighted scoring across posting quality, recruiter quality, and domain consistency"
+    ],
+    "edgeCases": [
+      "Missing salary and sparse posting detail",
+      "Official-sounding message with off-platform contact patterns",
+      "Low evidence confidence with mixed signals"
+    ],
+    "tests": [
+      "Legitimacy analyzer score range and field coverage",
+      "Scam pattern detection and clean-text control cases"
+    ],
+    "nextSteps": [
+      "Add external verification source linking",
+      "Introduce saved report history and comparison view"
+    ]
+  },
+  {
+    "title": "Recruiter Message Check",
+    "slug": "recruiter-message-check",
+    "category": "Career Intelligence",
+    "tags": [
+      "Recruiting",
+      "NLP Heuristics",
+      "Risk Scoring"
+    ],
+    "shortDescription": "Screens recruiter outreach for authenticity and suggests targeted verification questions.",
+    "longDescription": "A focused analysis tool that evaluates recruiter outreach quality, flags risky language patterns, and generates copy-friendly follow-up questions users can send immediately.",
+    "highlights": [
+      "Authenticity score with balanced risk framing.",
+      "Clear red-flag extraction from message content.",
+      "Actionable follow-up questions to reduce ambiguity."
+    ],
+    "architecture": [
+      "FastAPI endpoint for recruiter check analysis",
+      "UI panel for message input + output summary",
+      "Shared risk vocabulary with legitimacy checker"
+    ],
+    "tech": [
+      "React",
+      "TypeScript",
+      "FastAPI"
+    ],
+    "repoPath": "apps/startup-scout",
+    "runCommands": [
+      "pnpm dev:web",
+      "pnpm dev:api"
+    ],
+    "demoPaths": [
+      "/playground?demo=recruiter-message-check"
+    ],
+    "hasUnitTests": true,
+    "hasE2E": false,
+    "problem": "Recruiter messages can look legitimate while still containing subtle risk indicators.",
+    "approach": "Added deterministic message heuristics and structured output for trust signals, red flags, and suggested questions.",
+    "domainModel": [
+      "RecruiterCheckInput { message, recruiterEmail }",
+      "RecruiterCheckResult { authenticityScore, riskLevel, confidence }"
+    ],
+    "algorithms": [
+      "Rule-based message token checks",
+      "Risk score penalties for scam-associated phrases"
+    ],
+    "edgeCases": [
+      "Short but high-risk outreach messages",
+      "Positive tone with suspicious payment language"
+    ],
+    "tests": [
+      "Output schema presence checks",
+      "Positive and suspicious message scoring checks"
+    ],
+    "nextSteps": [
+      "Add impersonation pattern library",
+      "Track recurring recruiter signatures across checks"
+    ]
+  },
+  {
+    "title": "Company Credibility Check",
+    "slug": "company-credibility-check",
+    "category": "Career Intelligence",
+    "tags": [
+      "Company Research",
+      "Domain Trust",
+      "Risk Analysis"
+    ],
+    "shortDescription": "Evaluates company surface credibility using domain consistency and posting-source heuristics.",
+    "longDescription": "A credibility analyzer for company opportunities that checks domain alignment, HTTPS posture, and posting URL consistency, then returns explainable confidence and recommended next steps.",
+    "highlights": [
+      "Domain trust and consistency scoring.",
+      "Surface-signal and red-flag separation for clarity.",
+      "Recommended action based on evidence quality."
+    ],
+    "architecture": [
+      "Company-check API route with deterministic heuristics",
+      "Frontend credibility card + surface signal panel",
+      "Shared risk levels across legitimacy tooling"
+    ],
+    "tech": [
+      "Next.js",
+      "TypeScript",
+      "FastAPI"
+    ],
+    "repoPath": "apps/startup-scout",
+    "runCommands": [
+      "pnpm dev:web",
+      "pnpm dev:api"
+    ],
+    "demoPaths": [
+      "/playground?demo=company-credibility-check"
+    ],
+    "hasUnitTests": true,
+    "hasE2E": false,
+    "problem": "Candidates often waste time on opportunities with weak company-surface credibility.",
+    "approach": "Built a domain and posting-source checker that turns weak signals into clear, explainable risk guidance.",
+    "domainModel": [
+      "CompanyCheckInput { companyName, website, domain, postingUrl }",
+      "CompanyCheckResult { legitimacyScore, domainTrust, consistencyScore, riskLevel }"
+    ],
+    "algorithms": [
+      "Domain consistency scoring",
+      "Surface signal extraction and risk labeling"
+    ],
+    "edgeCases": [
+      "Mismatched posting and company domains",
+      "Website missing HTTPS"
+    ],
+    "tests": [
+      "Surface checker consistency/inconsistency cases",
+      "Risk output shape checks"
+    ],
+    "nextSteps": [
+      "Add WHOIS age and registration checks",
+      "Cross-link to legitimacy report IDs"
+    ]
   }
 ];
