@@ -68,32 +68,28 @@ export function PlaygroundPage() {
   const [searchParams] = useSearchParams();
   const [demo, setDemo] = useState<DemoKey>(() => parseDemoKey(searchParams.get("demo")));
 
-  const [age, setAge] = useState("24");
-  const [country, setCountry] = useState("US");
-  const [userId, setUserId] = useState("user_42");
-  const [rollout, setRollout] = useState("35");
-  const [targetCountry, setTargetCountry] = useState("US");
-  const [cells, setCells] = useState("100,25,40");
-  const [discount, setDiscount] = useState("12");
-  const [amount, setAmount] = useState("420");
-  const [txLastHour, setTxLastHour] = useState("4");
-  const [billingCountry, setBillingCountry] = useState("US");
-  const [shippingCountry, setShippingCountry] = useState("CA");
-  const [returns, setReturns] = useState("1.2,-0.8,0.4,2.1,-1.3");
-  const [startingCapital, setStartingCapital] = useState("10000");
-  const [jobTitle, setJobTitle] = useState("Founding AI Engineer");
-  const [companyName, setCompanyName] = useState("NovaRelay");
-  const [jobDescription, setJobDescription] = useState(
-    "Responsibilities, interview process, and salary transparency included."
-  );
-  const [salaryRange, setSalaryRange] = useState("$140k-$175k");
-  const [recruiterMessage, setRecruiterMessage] = useState(
-    "We can schedule a technical interview and share official role details."
-  );
-  const [postingUrl, setPostingUrl] = useState("https://novarelay.ai/careers/founding-ai-engineer");
-  const [companyWebsite, setCompanyWebsite] = useState("https://novarelay.ai");
-  const [companyDomain, setCompanyDomain] = useState("novarelay.ai");
-  const [recruiterEmail, setRecruiterEmail] = useState("talent@novarelay.ai");
+  const [age, setAge] = useState("");
+  const [country, setCountry] = useState("");
+  const [userId, setUserId] = useState("");
+  const [rollout, setRollout] = useState("");
+  const [targetCountry, setTargetCountry] = useState("");
+  const [cells, setCells] = useState("");
+  const [discount, setDiscount] = useState("");
+  const [amount, setAmount] = useState("");
+  const [txLastHour, setTxLastHour] = useState("");
+  const [billingCountry, setBillingCountry] = useState("");
+  const [shippingCountry, setShippingCountry] = useState("");
+  const [returns, setReturns] = useState("");
+  const [startingCapital, setStartingCapital] = useState("");
+  const [jobTitle, setJobTitle] = useState("");
+  const [companyName, setCompanyName] = useState("");
+  const [jobDescription, setJobDescription] = useState("");
+  const [salaryRange, setSalaryRange] = useState("");
+  const [recruiterMessage, setRecruiterMessage] = useState("");
+  const [postingUrl, setPostingUrl] = useState("");
+  const [companyWebsite, setCompanyWebsite] = useState("");
+  const [companyDomain, setCompanyDomain] = useState("");
+  const [recruiterEmail, setRecruiterEmail] = useState("");
 
   const result = useMemo(() => {
     if (demo === "rule-engine-studio") {
