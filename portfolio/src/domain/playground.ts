@@ -321,3 +321,76 @@ export function runCompanyCredibilityDemo(input: {
     trace
   };
 }
+
+export function runLeadScoringDemo(input: {
+  source: "organic" | "ads" | "referral";
+  companySize: number;
+  pagesViewed: number;
+  requestedDemo: boolean;
+}): PlaygroundResult {
+  const trace: string[] = [];
+  let score = 0;
+
+  const sourceScore = input.source === "referral" ? 28 : input.source === "organic" ? 18 : 10;
+  score += sourceScore;
+  trace.push(`source score (${input.source}) = ${sourceScore}`);
+
+  const companySizeScore = Math.min(22, Math.max(0, Math.floor(input.companySize / 50)));
+  score += companySizeScore;
+  trace.push(`company size score = min(22, floor(${input.companySize} / 50)) = ${companySizeScore}`);
+
+  const engagementScore = Math.min(30, input.pagesViewed * 4);
+  score += engagementScore;
+  trace.push(`engagement score = min(30, ${input.pagesViewed} * 4) = ${engagementScore}`);
+
+  if (input.requestedDemo) {
+    score += 20;
+  }
+  trace.push(`demo request bonus = ${input.requestedDemo ? 20 : 0}`);
+
+  const finalScore = Math.min(100, score);
+  const tier = finalScore >= 75 ? "HOT" : finalScore >= 50 ? "WARM" : "COLD";
+  trace.push(`final lead score = min(100, ${score}) = ${finalScore}`);
+
+  return {
+    output: `${tier} LEAD (${finalScore}/100)`,
+    trace
+  };
+}
+
+export function runSupportTriageDemo(input: {
+  severity: "low" | "medium" | "high" | "critical";
+  customerTier: "free" | "pro" | "enterprise";
+  impactedUsers: number;
+  hasPaymentImpact: boolean;
+}): PlaygroundResult {
+  const trace: string[] = [];
+  let priority = 0;
+
+  const severityScore =
+    input.severity === "critical" ? 55 : input.severity === "high" ? 40 : input.severity === "medium" ? 25 : 10;
+  priority += severityScore;
+  trace.push(`severity score (${input.severity}) = ${severityScore}`);
+
+  const tierScore = input.customerTier === "enterprise" ? 20 : input.customerTier === "pro" ? 12 : 6;
+  priority += tierScore;
+  trace.push(`customer tier score (${input.customerTier}) = ${tierScore}`);
+
+  const impactScore = Math.min(18, Math.max(0, Math.floor(input.impactedUsers / 25)));
+  priority += impactScore;
+  trace.push(`impact score = min(18, floor(${input.impactedUsers} / 25)) = ${impactScore}`);
+
+  if (input.hasPaymentImpact) {
+    priority += 12;
+  }
+  trace.push(`payment impact bonus = ${input.hasPaymentImpact ? 12 : 0}`);
+
+  const finalPriority = Math.min(100, priority);
+  const queue = finalPriority >= 80 ? "PAGE ON-CALL" : finalPriority >= 55 ? "PRIORITY QUEUE" : "STANDARD QUEUE";
+  trace.push(`final priority = min(100, ${priority}) = ${finalPriority}`);
+
+  return {
+    output: `${queue} (${finalPriority}/100)`,
+    trace
+  };
+}

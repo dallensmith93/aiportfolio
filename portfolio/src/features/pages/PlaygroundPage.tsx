@@ -2,13 +2,13 @@ import { useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import {
   runBacktesterDemo,
-  runCompanyCredibilityDemo,
   runFraudScoringDemo,
   runFeatureFlagsDemo,
   runJobLegitimacyDemo,
-  runRecruiterCheckDemo,
+  runLeadScoringDemo,
   runRuleEngineDemo,
-  runSpreadsheetDemo
+  runSpreadsheetDemo,
+  runSupportTriageDemo
 } from "../../domain/playground";
 
 type DemoKey =
@@ -17,10 +17,9 @@ type DemoKey =
   | "spreadsheet-lite-engine"
   | "fraud-scoring-api"
   | "quant-backtester-lab"
-  | "rockwell-agency-site"
   | "job-legitimacy-checker"
-  | "recruiter-message-check"
-  | "company-credibility-check";
+  | "lead-scoring-sandbox"
+  | "support-triage-simulator";
 
 const defaultDemo: DemoKey = "rule-engine-studio";
 const validDemos = new Set<DemoKey>([
@@ -29,11 +28,21 @@ const validDemos = new Set<DemoKey>([
   "spreadsheet-lite-engine",
   "fraud-scoring-api",
   "quant-backtester-lab",
-  "rockwell-agency-site",
   "job-legitimacy-checker",
-  "recruiter-message-check",
-  "company-credibility-check"
+  "lead-scoring-sandbox",
+  "support-triage-simulator"
 ]);
+
+const demoOptions: Array<{ key: DemoKey; label: string; hint: string }> = [
+  { key: "rule-engine-studio", label: "Rule Engine", hint: "Eligibility decisions" },
+  { key: "feature-flags-control-plane", label: "Feature Flags", hint: "Rollout targeting" },
+  { key: "spreadsheet-lite-engine", label: "Spreadsheet", hint: "Formula recalculation" },
+  { key: "fraud-scoring-api", label: "Fraud API", hint: "Risk thresholds" },
+  { key: "quant-backtester-lab", label: "Backtester", hint: "Returns and drawdown" },
+  { key: "job-legitimacy-checker", label: "Job Legitimacy", hint: "Scam signal analysis" },
+  { key: "lead-scoring-sandbox", label: "Lead Scoring", hint: "Sales qualification" },
+  { key: "support-triage-simulator", label: "Support Triage", hint: "Priority routing" }
+];
 
 function parseDemoKey(value: string | null): DemoKey {
   if (value && validDemos.has(value as DemoKey)) {
@@ -88,8 +97,15 @@ export function PlaygroundPage() {
   const [recruiterMessage, setRecruiterMessage] = useState("");
   const [postingUrl, setPostingUrl] = useState("");
   const [companyWebsite, setCompanyWebsite] = useState("");
-  const [companyDomain, setCompanyDomain] = useState("");
   const [recruiterEmail, setRecruiterEmail] = useState("");
+  const [leadSource, setLeadSource] = useState("organic");
+  const [leadCompanySize, setLeadCompanySize] = useState("");
+  const [leadPagesViewed, setLeadPagesViewed] = useState("");
+  const [leadRequestedDemo, setLeadRequestedDemo] = useState(false);
+  const [ticketSeverity, setTicketSeverity] = useState("medium");
+  const [ticketTier, setTicketTier] = useState("pro");
+  const [ticketImpactedUsers, setTicketImpactedUsers] = useState("");
+  const [ticketPaymentImpact, setTicketPaymentImpact] = useState(false);
 
   const result = useMemo(() => {
     if (demo === "rule-engine-studio") {
@@ -119,16 +135,6 @@ export function PlaygroundPage() {
         .filter((value) => !Number.isNaN(value));
       return runBacktesterDemo(parsedReturns, Number(startingCapital));
     }
-    if (demo === "rockwell-agency-site") {
-      return {
-        output: "Rockwell site showcase ready",
-        trace: [
-          "Custom WordPress contractor theme",
-          "Conversion sections: hero, services, testimonials, FAQ, contact",
-          "Use the launch button below to open the local site"
-        ]
-      };
-    }
     if (demo === "job-legitimacy-checker") {
       return runJobLegitimacyDemo({
         jobTitle,
@@ -141,15 +147,23 @@ export function PlaygroundPage() {
         companyWebsite
       });
     }
-    if (demo === "recruiter-message-check") {
-      return runRecruiterCheckDemo({ message: recruiterMessage, recruiterEmail });
+    if (demo === "lead-scoring-sandbox") {
+      return runLeadScoringDemo({
+        source: leadSource === "referral" || leadSource === "ads" ? leadSource : "organic",
+        companySize: Number(leadCompanySize),
+        pagesViewed: Number(leadPagesViewed),
+        requestedDemo: leadRequestedDemo
+      });
     }
-    if (demo === "company-credibility-check") {
-      return runCompanyCredibilityDemo({
-        companyName,
-        domain: companyDomain,
-        website: companyWebsite,
-        postingUrl
+    if (demo === "support-triage-simulator") {
+      return runSupportTriageDemo({
+        severity:
+          ticketSeverity === "critical" || ticketSeverity === "high" || ticketSeverity === "low"
+            ? ticketSeverity
+            : "medium",
+        customerTier: ticketTier === "enterprise" || ticketTier === "free" ? ticketTier : "pro",
+        impactedUsers: Number(ticketImpactedUsers),
+        hasPaymentImpact: ticketPaymentImpact
       });
     }
     const numbers = cells
@@ -179,8 +193,15 @@ export function PlaygroundPage() {
     recruiterMessage,
     postingUrl,
     companyWebsite,
-    companyDomain,
-    recruiterEmail
+    recruiterEmail,
+    leadSource,
+    leadCompanySize,
+    leadPagesViewed,
+    leadRequestedDemo,
+    ticketSeverity,
+    ticketTier,
+    ticketImpactedUsers,
+    ticketPaymentImpact
   ]);
 
   const inferredRisk = inferRiskLevel(result.output);
@@ -189,35 +210,33 @@ export function PlaygroundPage() {
     <section className="space-y-6">
       <header>
         <h1 className="text-3xl font-bold tracking-tight">Interactive Playground</h1>
-        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+        <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600 dark:text-slate-300">
           Run tiny in-browser demos of domain engines and inspect explanation traces.
         </p>
       </header>
 
-      <div className="grid gap-4 md:grid-cols-9">
-        {[
-          ["rule-engine-studio", "Rule Engine"],
-          ["feature-flags-control-plane", "Feature Flags"],
-          ["spreadsheet-lite-engine", "Spreadsheet"],
-          ["fraud-scoring-api", "Fraud API"],
-          ["quant-backtester-lab", "Backtester"],
-          ["rockwell-agency-site", "Rockwell Site"],
-          ["job-legitimacy-checker", "Job Legitimacy"],
-          ["recruiter-message-check", "Recruiter Check"],
-          ["company-credibility-check", "Company Check"]
-        ].map(([key, label]) => (
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {demoOptions.map(({ key, label, hint }) => (
           <button
             key={key}
             type="button"
-            onClick={() => setDemo(key as DemoKey)}
+            onClick={() => setDemo(key)}
             className={[
-              "rounded-xl border px-4 py-3 text-left text-sm font-semibold transition",
+              "h-full rounded-xl border px-5 py-4 text-left transition",
               demo === key
-                ? "border-sky-600 bg-sky-600 text-white"
-                : "border-slate-300 bg-white text-slate-700 hover:border-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
+                ? "border-sky-600 bg-sky-600 text-white shadow-sm"
+                : "border-slate-300 bg-white text-slate-700 hover:border-slate-500 hover:shadow-sm dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
             ].join(" ")}
           >
-            {label}
+            <span className="block text-sm font-semibold leading-5 tracking-[0.01em]">{label}</span>
+            <span
+              className={[
+                "mt-1 block text-xs leading-5",
+                demo === key ? "text-sky-100" : "text-slate-500 dark:text-slate-400"
+              ].join(" ")}
+            >
+              {hint}
+            </span>
           </button>
         ))}
       </div>
@@ -352,17 +371,6 @@ export function PlaygroundPage() {
           </div>
         )}
 
-        {demo === "rockwell-agency-site" && (
-          <div className="space-y-3">
-            <p className="text-sm text-slate-700 dark:text-slate-300">
-              Rockwell Agency Site is now featured directly in your portfolio projects.
-            </p>
-            <p className="text-sm text-slate-700 dark:text-slate-300">
-              Use the Projects page to view the full Rockwell project entry and details without leaving the portfolio app.
-            </p>
-          </div>
-        )}
-
         {demo === "job-legitimacy-checker" && (
           <div className="grid gap-3 sm:grid-cols-2">
             <label className="text-sm">
@@ -424,67 +432,98 @@ export function PlaygroundPage() {
           </div>
         )}
 
-        {demo === "recruiter-message-check" && (
-          <div className="grid gap-3">
-            <label className="text-sm">
-              Recruiter Message
-              <input
-                className="mt-1 w-full rounded border border-slate-300 px-2 py-1 dark:border-slate-700 dark:bg-slate-950"
-                value={recruiterMessage}
-                onChange={(event) => setRecruiterMessage(event.target.value)}
-              />
-            </label>
-            <label className="text-sm">
-              Recruiter Email
-              <input
-                className="mt-1 w-full rounded border border-slate-300 px-2 py-1 dark:border-slate-700 dark:bg-slate-950"
-                value={recruiterEmail}
-                onChange={(event) => setRecruiterEmail(event.target.value)}
-              />
-            </label>
-          </div>
-        )}
-
-        {demo === "company-credibility-check" && (
+        {demo === "lead-scoring-sandbox" && (
           <div className="grid gap-3 sm:grid-cols-2">
             <label className="text-sm">
-              Company
+              Lead Source
+              <select
+                className="mt-1 w-full rounded border border-slate-300 px-2 py-1 dark:border-slate-700 dark:bg-slate-950"
+                value={leadSource}
+                onChange={(event) => setLeadSource(event.target.value)}
+              >
+                <option value="organic">Organic</option>
+                <option value="ads">Ads</option>
+                <option value="referral">Referral</option>
+              </select>
+            </label>
+            <label className="text-sm">
+              Company Size
               <input
                 className="mt-1 w-full rounded border border-slate-300 px-2 py-1 dark:border-slate-700 dark:bg-slate-950"
-                value={companyName}
-                onChange={(event) => setCompanyName(event.target.value)}
+                value={leadCompanySize}
+                onChange={(event) => setLeadCompanySize(event.target.value)}
               />
             </label>
             <label className="text-sm">
-              Domain
+              Pages Viewed
               <input
                 className="mt-1 w-full rounded border border-slate-300 px-2 py-1 dark:border-slate-700 dark:bg-slate-950"
-                value={companyDomain}
-                onChange={(event) => setCompanyDomain(event.target.value)}
+                value={leadPagesViewed}
+                onChange={(event) => setLeadPagesViewed(event.target.value)}
               />
             </label>
             <label className="text-sm">
-              Website
+              <span className="block">Demo Requested</span>
               <input
-                className="mt-1 w-full rounded border border-slate-300 px-2 py-1 dark:border-slate-700 dark:bg-slate-950"
-                value={companyWebsite}
-                onChange={(event) => setCompanyWebsite(event.target.value)}
-              />
-            </label>
-            <label className="text-sm">
-              Posting URL
-              <input
-                className="mt-1 w-full rounded border border-slate-300 px-2 py-1 dark:border-slate-700 dark:bg-slate-950"
-                value={postingUrl}
-                onChange={(event) => setPostingUrl(event.target.value)}
+                type="checkbox"
+                className="mt-2 h-4 w-4 rounded border-slate-300 text-sky-600 dark:border-slate-700 dark:bg-slate-950"
+                checked={leadRequestedDemo}
+                onChange={(event) => setLeadRequestedDemo(event.target.checked)}
               />
             </label>
           </div>
         )}
 
-        <div className="mt-5 rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-950">
-          <p className="text-sm font-semibold">Output</p>
-          <div className="mt-1 flex flex-wrap items-center gap-2">
+        {demo === "support-triage-simulator" && (
+          <div className="grid gap-3 sm:grid-cols-2">
+            <label className="text-sm">
+              Severity
+              <select
+                className="mt-1 w-full rounded border border-slate-300 px-2 py-1 dark:border-slate-700 dark:bg-slate-950"
+                value={ticketSeverity}
+                onChange={(event) => setTicketSeverity(event.target.value)}
+              >
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+                <option value="critical">Critical</option>
+              </select>
+            </label>
+            <label className="text-sm">
+              Customer Tier
+              <select
+                className="mt-1 w-full rounded border border-slate-300 px-2 py-1 dark:border-slate-700 dark:bg-slate-950"
+                value={ticketTier}
+                onChange={(event) => setTicketTier(event.target.value)}
+              >
+                <option value="free">Free</option>
+                <option value="pro">Pro</option>
+                <option value="enterprise">Enterprise</option>
+              </select>
+            </label>
+            <label className="text-sm">
+              Impacted Users
+              <input
+                className="mt-1 w-full rounded border border-slate-300 px-2 py-1 dark:border-slate-700 dark:bg-slate-950"
+                value={ticketImpactedUsers}
+                onChange={(event) => setTicketImpactedUsers(event.target.value)}
+              />
+            </label>
+            <label className="text-sm">
+              <span className="block">Payment Impact</span>
+              <input
+                type="checkbox"
+                className="mt-2 h-4 w-4 rounded border-slate-300 text-sky-600 dark:border-slate-700 dark:bg-slate-950"
+                checked={ticketPaymentImpact}
+                onChange={(event) => setTicketPaymentImpact(event.target.checked)}
+              />
+            </label>
+          </div>
+        )}
+
+        <div className="mt-6 rounded-xl border border-slate-200 bg-slate-50 p-5 dark:border-slate-700 dark:bg-slate-950">
+          <p className="text-sm font-semibold tracking-[0.01em]">Output</p>
+          <div className="mt-2 flex flex-wrap items-center gap-2">
             <p className="text-lg font-bold text-sky-600">{result.output}</p>
             {inferredRisk && (
               <span
@@ -497,8 +536,8 @@ export function PlaygroundPage() {
               </span>
             )}
           </div>
-          <p className="mt-3 text-sm font-semibold">Trace</p>
-          <ul className="mt-1 list-disc space-y-1 pl-5 text-sm text-slate-600 dark:text-slate-300">
+          <p className="mt-4 text-sm font-semibold tracking-[0.01em]">Trace</p>
+          <ul className="mt-2 list-disc space-y-1.5 pl-5 text-sm leading-6 text-slate-600 dark:text-slate-300">
             {result.trace.map((line) => (
               <li key={line}>{line}</li>
             ))}
