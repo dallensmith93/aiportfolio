@@ -9,6 +9,23 @@ export type PlaygroundResult = {
   trace: string[];
 };
 
+type MusicTrack = {
+  title: string;
+  artist: string;
+  energy: number;
+};
+
+const MUSIC_LIBRARY: MusicTrack[] = [
+  { title: "Beaver Creek", artist: "Aso, Middle School, Aviino", energy: 32 },
+  { title: "Daylight", artist: "Aiguille", energy: 46 },
+  { title: "Keep Going", artist: "Sworn", energy: 58 },
+  { title: "Nightfall", artist: "Aiguille", energy: 41 },
+  { title: "Reflection", artist: "Sworn", energy: 24 },
+  { title: "Under the City Stars", artist: "Aso, Middle School, Aviino", energy: 36 },
+  { title: "Jazz Cabbage", artist: "Ian Ewing, Strehlow", energy: 63 },
+  { title: "Lagoons", artist: "Strehlow, Chris Mazuera", energy: 52 }
+];
+
 const FREE_EMAIL_DOMAINS = new Set([
   "gmail.com",
   "yahoo.com",
@@ -150,6 +167,54 @@ export function runBacktesterDemo(returns: number[], startingCapital: number): P
 
   return {
     output: `PnL ${cumulative.toFixed(2)}% | Max DD ${maxDrawdown.toFixed(2)}%`,
+    trace
+  };
+}
+
+export function runMusicPlayerDemo(input: {
+  search: string;
+  preferredArtist: string;
+  mood: "focus" | "night" | "boost";
+}): PlaygroundResult {
+  const trace: string[] = [];
+  const search = input.search.trim().toLowerCase();
+  const preferredArtist = input.preferredArtist.trim().toLowerCase();
+  const targetEnergy = input.mood === "focus" ? 35 : input.mood === "night" ? 25 : 60;
+
+  trace.push(`library size: ${MUSIC_LIBRARY.length} tracks`);
+  trace.push(`target mood energy (${input.mood}) = ${targetEnergy}`);
+
+  const ranked = MUSIC_LIBRARY.map((track) => {
+    let score = 0;
+
+    if (
+      search &&
+      `${track.title} ${track.artist}`.toLowerCase().includes(search)
+    ) {
+      score += 50;
+    }
+
+    if (preferredArtist && track.artist.toLowerCase().includes(preferredArtist)) {
+      score += 35;
+    }
+
+    score += Math.max(0, 25 - Math.abs(track.energy - targetEnergy));
+
+    return { track, score };
+  }).sort((a, b) => b.score - a.score);
+
+  const [selected, ...queue] = ranked;
+  trace.push(`selected: ${selected.track.title} by ${selected.track.artist}`);
+  trace.push(`match score: ${selected.score}`);
+  trace.push(
+    `next up: ${queue
+      .slice(0, 2)
+      .map(({ track }) => track.title)
+      .join(" -> ")}`
+  );
+
+  return {
+    output: `Now playing: ${selected.track.title} | Queue ready: ${queue.length} tracks`,
     trace
   };
 }

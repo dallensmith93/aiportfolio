@@ -320,6 +320,69 @@ export const projects: PortfolioProject[] = [
     ]
   },
   {
+    "title": "AI Music Player Codex",
+    "slug": "ai-music-player-codex",
+    "category": "Media Experience",
+    "tags": [
+      "Music Player",
+      "Audio UI",
+      "Playlist",
+      "React"
+    ],
+    "shortDescription": "A polished browser music player with album art, track browsing, and queue-first listening flow.",
+    "longDescription": "A frontend music player centered on lightweight browsing and immediate playback. The experience combines a visual library, now-playing focus, and simple queue interactions to make track selection feel fast and deliberate.",
+    "highlights": [
+      "Branded listening surface with album artwork and now-playing state.",
+      "Library browsing built around recognizable tracks and artist metadata.",
+      "Queue-oriented interaction that keeps playback context visible."
+    ],
+    "architecture": [
+      "src/domain: track selection, queue ordering, playback state",
+      "src/features: library cards, player controls, now-playing panel",
+      "src/app: shell composition and route/bootstrap wiring"
+    ],
+    "tech": [
+      "React",
+      "TypeScript",
+      "CSS",
+      "Netlify"
+    ],
+    "repoPath": "external/ai-music-player-codex",
+    "runCommands": [
+      "Hosted demo on Netlify"
+    ],
+    "demoPaths": [
+      "/playground?demo=ai-music-player-codex"
+    ],
+    "hasUnitTests": false,
+    "hasE2E": false,
+    "problem": "A music player needs to make discovery and playback feel immediate without burying the listener in controls.",
+    "approach": "Centered the UI on track artwork, concise metadata, and a queue-friendly playback model so users can move from browsing to listening with minimal friction.",
+    "domainModel": [
+      "Track { title, artist, artwork, audioSrc }",
+      "PlaybackState { currentTrackId, isPlaying, progress }",
+      "QueueState { activeTrackId, upcomingTrackIds }"
+    ],
+    "algorithms": [
+      "Library filtering across track and artist metadata",
+      "Queue ordering from the selected track plus remaining library items",
+      "Playback progress updates from active audio state"
+    ],
+    "edgeCases": [
+      "No search matches in the library",
+      "Switching tracks while audio is already playing",
+      "Missing or delayed media metadata during load"
+    ],
+    "tests": [
+      "Playback and queue behavior should be covered with component tests",
+      "Smoke coverage should verify selecting a track updates the now-playing panel"
+    ],
+    "nextSteps": [
+      "Add saved playlists and recent listening history",
+      "Introduce keyboard shortcuts for playback and queue navigation"
+    ]
+  },
+  {
     "title": "Job Legitimacy Checker",
     "slug": "job-legitimacy-checker",
     "category": "Career Intelligence",

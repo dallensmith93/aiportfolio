@@ -6,6 +6,7 @@ import {
   runFeatureFlagsDemo,
   runJobLegitimacyDemo,
   runLeadScoringDemo,
+  runMusicPlayerDemo,
   runRuleEngineDemo,
   runSpreadsheetDemo,
   runSupportTriageDemo
@@ -17,6 +18,7 @@ type DemoKey =
   | "spreadsheet-lite-engine"
   | "fraud-scoring-api"
   | "quant-backtester-lab"
+  | "ai-music-player-codex"
   | "job-legitimacy-checker"
   | "lead-scoring-sandbox"
   | "support-triage-simulator";
@@ -28,6 +30,7 @@ const validDemos = new Set<DemoKey>([
   "spreadsheet-lite-engine",
   "fraud-scoring-api",
   "quant-backtester-lab",
+  "ai-music-player-codex",
   "job-legitimacy-checker",
   "lead-scoring-sandbox",
   "support-triage-simulator"
@@ -39,6 +42,7 @@ const demoOptions: Array<{ key: DemoKey; label: string; hint: string }> = [
   { key: "spreadsheet-lite-engine", label: "Spreadsheet", hint: "Formula recalculation" },
   { key: "fraud-scoring-api", label: "Fraud API", hint: "Risk thresholds" },
   { key: "quant-backtester-lab", label: "Backtester", hint: "Returns and drawdown" },
+  { key: "ai-music-player-codex", label: "AI Music Player", hint: "Library and queueing" },
   { key: "job-legitimacy-checker", label: "Job Legitimacy", hint: "Scam signal analysis" },
   { key: "lead-scoring-sandbox", label: "Lead Scoring", hint: "Sales qualification" },
   { key: "support-triage-simulator", label: "Support Triage", hint: "Priority routing" }
@@ -90,6 +94,9 @@ export function PlaygroundPage() {
   const [shippingCountry, setShippingCountry] = useState("");
   const [returns, setReturns] = useState("");
   const [startingCapital, setStartingCapital] = useState("");
+  const [musicSearch, setMusicSearch] = useState("");
+  const [preferredArtist, setPreferredArtist] = useState("");
+  const [musicMood, setMusicMood] = useState("focus");
   const [jobTitle, setJobTitle] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [jobDescription, setJobDescription] = useState("");
@@ -134,6 +141,16 @@ export function PlaygroundPage() {
         .map((value) => Number(value.trim()))
         .filter((value) => !Number.isNaN(value));
       return runBacktesterDemo(parsedReturns, Number(startingCapital));
+    }
+    if (demo === "ai-music-player-codex") {
+      return runMusicPlayerDemo({
+        search: musicSearch,
+        preferredArtist,
+        mood:
+          musicMood === "night" || musicMood === "boost"
+            ? musicMood
+            : "focus"
+      });
     }
     if (demo === "job-legitimacy-checker") {
       return runJobLegitimacyDemo({
@@ -186,6 +203,9 @@ export function PlaygroundPage() {
     shippingCountry,
     returns,
     startingCapital,
+    musicSearch,
+    preferredArtist,
+    musicMood,
     jobTitle,
     companyName,
     jobDescription,
@@ -367,6 +387,41 @@ export function PlaygroundPage() {
                 value={startingCapital}
                 onChange={(event) => setStartingCapital(event.target.value)}
               />
+            </label>
+          </div>
+        )}
+
+        {demo === "ai-music-player-codex" && (
+          <div className="grid gap-3 sm:grid-cols-2">
+            <label className="text-sm">
+              Search Track
+              <input
+                className="mt-1 w-full rounded border border-slate-300 px-2 py-1 dark:border-slate-700 dark:bg-slate-950"
+                value={musicSearch}
+                onChange={(event) => setMusicSearch(event.target.value)}
+                placeholder="Beaver Creek"
+              />
+            </label>
+            <label className="text-sm">
+              Preferred Artist
+              <input
+                className="mt-1 w-full rounded border border-slate-300 px-2 py-1 dark:border-slate-700 dark:bg-slate-950"
+                value={preferredArtist}
+                onChange={(event) => setPreferredArtist(event.target.value)}
+                placeholder="Aiguille"
+              />
+            </label>
+            <label className="text-sm sm:col-span-2">
+              Mood
+              <select
+                className="mt-1 w-full rounded border border-slate-300 px-2 py-1 dark:border-slate-700 dark:bg-slate-950"
+                value={musicMood}
+                onChange={(event) => setMusicMood(event.target.value)}
+              >
+                <option value="focus">Focus</option>
+                <option value="night">Night</option>
+                <option value="boost">Boost</option>
+              </select>
             </label>
           </div>
         )}
