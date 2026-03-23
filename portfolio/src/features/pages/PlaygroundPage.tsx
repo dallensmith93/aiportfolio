@@ -101,7 +101,7 @@ export function PlaygroundPage() {
   const [companyName, setCompanyName] = useState("");
   const [jobDescription, setJobDescription] = useState("");
   const [salaryRange, setSalaryRange] = useState("");
-  const [recruiterMessage, setRecruiterMessage] = useState("");
+  const [recruiterMessage] = useState("");
   const [postingUrl, setPostingUrl] = useState("");
   const [companyWebsite, setCompanyWebsite] = useState("");
   const [recruiterEmail, setRecruiterEmail] = useState("");
